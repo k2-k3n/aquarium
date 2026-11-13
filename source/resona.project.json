@@ -1,0 +1,11 @@
+{
+  "name": "Aquarium",
+  "id": "org.resona.creative.aquarium",
+  "version": "1.1.2",
+  "api": 1,
+  "description": "Your guitar is playing underwater: a submarine that dives as the tone darkens. Needs its Deep Water pack (dsp/).",
+  "kind": "app",
+  "sources": [
+    "src/app.cpp"
+  ]
+}

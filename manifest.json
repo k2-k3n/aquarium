@@ -1,0 +1,31 @@
+{
+  "folder": "02-Aquarium",
+  "description": "用水下滤波、共振和回声处理吉他，潜艇与海景跟随控制变化。",
+  "app": {
+    "file": "App.rpk",
+    "id": "org.resona.creative.aquarium",
+    "name": "Aquarium",
+    "version": "1.1.2",
+    "kind": 1,
+    "bytes": 166660,
+    "sha256": "7acf81277aecdbd6543e4da39ea357c5bdd73d1446da437c2503fd307ca1a1a4",
+    "crc32": 427810968
+  },
+  "audio_packs": [
+    {
+      "file": "Audio-Pack.rpk",
+      "id": "org.resona.creative.aquarium.voice",
+      "name": "Deep Water",
+      "version": "1.0.1",
+      "kind": 0,
+      "bytes": 20112,
+      "sha256": "f9657f7c9600c9163cef4fbe0061fa8a1d32e75f2b02524c00ea314287956b5b",
+      "crc32": 4023452449
+    }
+  ],
+  "source": "source/",
+  "cover": "source/assets/aquarium-preview.png",
+  "license_file_present": false,
+  "host_build_check": "updated build verified",
+  "community_upload": "not sent"
+}

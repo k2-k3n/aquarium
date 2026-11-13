@@ -1,0 +1,12 @@
+{
+  "name": "Deep Water",
+  "id": "org.resona.creative.aquarium.voice",
+  "version": "1.0.1",
+  "api": 1,
+  "description": "Underwater guitar: a depth low-pass with pressure resonance, drifting current chorus, a dark cave reverb, bubble bloops on every pick and a sonar echo.",
+  "sources": [
+    "src/dsp.cpp",
+    "src/ui.cpp",
+    "src/main.cpp"
+  ]
+}
