@@ -1,65 +1,33 @@
 """Serialize the Aquarium RGB565 title sequence for the device's boot player."""
 from itertools import groupby
+from math import pi, sin
 from pathlib import Path
-import re
 import struct
 import zlib
 
 ROOT = Path(__file__).resolve().parent.parent
 W, H = 320, 172
-ART = (ROOT / "src/scene.h").read_text()
-INK = 0x0044
-AQUA = 0x7EFB
-CREAM = 0xF7BC
-
-def pixels(name):
-    return list(map(int, re.search(rf"{name}\[\] = \{{(.*?)\}};", ART, re.S)[1].split(",")[:-1]))
+INK = 0x0063  # Same starting color as the app's scene fade.
 
 def channels(color):
     return ((color >> 11) * 255 // 31, ((color >> 5) & 63) * 255 // 63, (color & 31) * 255 // 31)
 
-SUB = pixels("kAquariumSub")
-SUB_W, SUB_H = map(int, re.search(r"kSubW = (\d+), kSubH = (\d+)", ART).groups())
-# The boot decoder has a small run budget. Keep the body at native resolution in
-# the final frame and use a smooth, dark backdrop with a few light bands.
-GLYPHS = {
-    "A": (14, 17, 17, 31, 17, 17, 17),
-    "Q": (14, 17, 17, 17, 21, 18, 13),
-    "U": (17, 17, 17, 17, 17, 17, 14),
-    "R": (30, 17, 17, 30, 20, 18, 17),
-    "I": (31, 4, 4, 4, 4, 4, 31),
-    "M": (17, 27, 21, 21, 17, 17, 17),
-}
-
-def frame(sub_x, sub_y, ring, step, title=False):
+def frame(phase):
     result = [INK] * (W * H)
-    for y in range(H):
-        edge = 228 + y // 3
-        result[y * W + edge:(y + 1) * W] = [0x0129 if y < 106 else 0x00A6] * (W - edge)
-    if ring:
-        cx, cy = 218, 83
-        for y in range(cy - ring // 2, cy + ring // 2 + 1):
-            dx = round((max(0, ring * ring - 4 * (y - cy) ** 2)) ** 0.5)
-            result[y * W + cx - dx] = AQUA
-            result[y * W + cx + dx] = AQUA
-    if sub_x is not None:
-        for y in range(SUB_H):
-            for x in range(0, SUB_W, step):
-                color = SUB[y * SUB_W + x]
-                if color:
-                    r, g, b = color >> 11, (color >> 5) & 63, color & 31
-                    color = max(1, (r & 28) << 11 | (g & 48) << 5 | (b & 28))
-                    start = (y + sub_y) * W + x + sub_x
-                    width = min(step, SUB_W - x)
-                    result[start:start + width] = [color] * width
-    if title:
-        for i, ch in enumerate("AQUARIUM"):
-            for y, bits in enumerate(GLYPHS[ch]):
-                for x in range(5):
-                    if bits & (16 >> x):
-                        for dy in range(2):
-                            pos = (16 + y * 2 + dy) * W + 13 + i * 12 + x * 2
-                            result[pos:pos + 2] = [CREAM, CREAM]
+    strength = sin(pi * phase) ** 2
+    # Broad, dim water light. Its edge softens toward the lower left.
+    for y in range(96):
+        glow = strength * (1 - y / 96)
+        edge = 176 + y + round(24 * phase)
+        for band in range(3):
+            x = edge + band * 26
+            if x >= W:
+                break
+            green = round((1 + band) * glow)
+            blue = round((2 + band) * glow)
+            color = (3 + green) << 5 | (3 + blue)
+            end = min(W, x + 26) if band < 2 else W
+            result[y * W + x:y * W + end] = [color] * (end - x)
     return result
 
 def write_png_animation(path, frames):
@@ -82,12 +50,7 @@ def write_png_animation(path, frames):
             sequence += 1
     path.write_bytes(png + chunk(b"IEND", b""))
 
-frames = [
-    (140, [INK] * (W * H)),
-    (170, frame(None, 0, 20, 1)),
-    (170, frame(46, 21, 36, 4)),
-    (600, frame(85, 39, 48, 1, True)),
-]
+frames = [(32, frame(i / 18)) for i in range(19)]
 payload = bytearray()
 for delay, colors in frames:
     runs = [(sum(1 for _ in group), color) for color, group in groupby(colors)]

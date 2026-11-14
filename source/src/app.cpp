@@ -42,6 +42,7 @@ struct State {
     kit::Saver saver;
     Saved s;
     uint32_t ms, seed, pick_at, sonar_at;
+    uint32_t intro_ms;
     float depth, current, scatter, drift, bob, stray, light_phase;
     float sonar_strength;
     uint8_t pending_bubbles;
@@ -103,9 +104,19 @@ void bubble(State *st, float x, float y, int size)
     }
 }
 
+constexpr uint32_t kIntroMs = 560;
+constexpr uint16_t kIntroInk = 0x0063;
+
+float intro_progress(const State *st)
+{
+    const float t = (float)st->intro_ms / kIntroMs;
+    return t * t * (3.0f - 2.0f * t);
+}
+
 int sub_x(const State *st)
 {
-    return 85 + (int)((2.0f + 8.0f * st->current) * resona_sinf(st->bob));
+    return 85 + (int)((2.0f + 8.0f * st->current) * resona_sinf(st->bob))
+        - (int)(48.0f * (1.0f - intro_progress(st)) + 0.5f);
 }
 
 int sub_y(const State *st)
@@ -266,6 +277,20 @@ void draw(State *st)
         c.rect(236 + 23 * i, 153, 17, 2, i <= bubbles_now(st) ? aqua : muted);
 
     c.banner(kit::audio_message(st->audio), ink, amber);
+    if (st->intro_ms < kIntroMs) {
+        const unsigned gain = (unsigned)(256.0f * intro_progress(st) + 0.5f);
+        for (int y = 0; y < c.H; ++y) {
+            uint16_t *row = c.px + y * c.stride;
+            for (int x = 0; x < c.W; ++x) {
+                const unsigned color = row[x];
+                const unsigned r = ((color >> 11) * gain + 128) >> 8;
+                const unsigned base = (kIntroInk & 31) * (256 - gain) + 128;
+                const unsigned g = ((((color >> 5) & 63) * gain) + base) >> 8;
+                const unsigned b = (((color & 31) * gain) + base) >> 8;
+                row[x] = (uint16_t)(r << 11 | g << 5 | b);
+            }
+        }
+    }
     c.present(P);
 }
 
@@ -375,6 +400,8 @@ void frame(void *state, uint32_t ms)
     react_to_input(st, previous_input, dt);
     animate(st, dt);
     draw(st);
+    const uint32_t intro_next = st->intro_ms + dt;
+    st->intro_ms = intro_next < kIntroMs ? intro_next : kIntroMs;
 }
 
 const resona_app kApp = {

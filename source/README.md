@@ -60,7 +60,7 @@ as you hold it (DIVE wins over RISE).
 - **BUBBLES** controls the bursts from the propeller when you play. Deeper water produces larger, lower-pitched bubbles.
 - **SONAR** adds a diffused echo to what you play. The display follows the input meter and shows successive returns at 560 ms intervals.
 
-On startup, a sonar pulse appears first, then the submarine dives into view.
+On startup, soft blue-green water light fades in and out. The main scene then fades in as the submarine glides into position.
 
 ## Deep Water (dsp/)
 
@@ -95,5 +95,7 @@ resona-lab app build .
 
 ## Changes
 
+- 1.1.5 — Replaced the bright boot ring with soft water light. On-device retest confirmed the afterimage was gone.
+- 1.1.4 — Smoother sonar animation and a fade into the main scene.
 - 1.1.3 — Updated seafloor and submarine artwork, animated surface light, and matching startup sprite.
 - 1.1.2 — New submarine scene and matching startup animation. Falls back to dry guitar if Deep Water cannot start.
