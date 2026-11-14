@@ -55,6 +55,7 @@ as you hold it (DIVE wins over RISE).
 ## The scene
 
 - **DEPTH** moves the submarine smoothly from the shallows to 200 m and rolls off the guitar's high frequencies.
+- Surface light shimmers with the current and dims as the submarine dives.
 - **CURRENT** sets the speed of the drifting particles and the submarine’s sway. The sway follows Deep Water’s modulation rate and slows with depth.
 - **BUBBLES** controls the bursts from the propeller when you play. Deeper water produces larger, lower-pitched bubbles.
 - **SONAR** adds a diffused echo to what you play. The display follows the input meter and shows successive returns at 560 ms intervals.
@@ -87,11 +88,12 @@ Deeper water also slows the current, lowers the bubbles' pitch and lengthens the
 
 ```
 resona-lab build dsp && resona-lab pack build dsp
-resona-lab app build .
-swift tools/encode_scene.swift assets/seafloor.png assets/submarine.png src/scene.h
+swift tools/encode_scene.swift assets/seafloor-v2.png assets/submarine-v2.png src/scene.h
 python3 tools/make_splash.py
+resona-lab app build .
 ```
 
 ## Changes
 
+- 1.1.3 — Updated seafloor and submarine artwork, animated surface light, and matching startup sprite.
 - 1.1.2 — New submarine scene and matching startup animation. Falls back to dry guitar if Deep Water cannot start.

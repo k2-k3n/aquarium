@@ -1,6 +1,6 @@
 {
   "description": "随深度改变吉他的滤波、共振和回声。声呐和气泡由 Aquarium 单独控制。",
-  "readme": "# Deep Water\n\n随深度改变吉他的滤波、共振和回声。声呐和气泡由 Aquarium 单独控制。\n\n## 使用方法\n\n1. 先在 Resona Box 上安装本音频包。\n2. 安装并打开 Aquarium 1.1.2。\n3. 在 App 界面使用上方和下方编码器控制音色与功能。\n\n## 配套关系\n\n- 音频包：`org.resona.creative.aquarium.voice`，版本 1.0.1\n- App：`org.resona.creative.aquarium`，版本 1.1.2\n\n完整界面及双编码器的旋转、短按、长按说明见 Aquarium 的社区项目页面。\n\n## 更新\n\n- 1.0.1 — 减少实时滤波和气泡包络的计算开销，保留原有音色与控制。\n",
+  "readme": "# Deep Water\n\n随深度改变吉他的滤波、共振和回声。声呐和气泡由 Aquarium 单独控制。\n\n## 使用方法\n\n1. 先在 Resona Box 上安装本音频包。\n2. 安装并打开 Aquarium 1.1.3。\n3. 在 App 界面使用上方和下方编码器控制音色与功能。\n\n## 配套关系\n\n- 音频包：`org.resona.creative.aquarium.voice`，版本 1.0.1\n- App：`org.resona.creative.aquarium`，版本 1.1.3\n\n完整界面及双编码器的旋转、短按、长按说明见 Aquarium 的社区项目页面。\n\n## 更新\n\n- 1.0.1 — 减少实时滤波和气泡包络的计算开销，保留原有音色与控制。\n",
   "release_notes": "减少滤波和气泡的实时计算量。",
   "source_url": "https://github.com/k2-k3n/aquarium/tree/main/source/dsp",
   "category": ""

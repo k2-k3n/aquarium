@@ -5,13 +5,13 @@
 ## 使用方法
 
 1. 先在 Resona Box 上安装本音频包。
-2. 安装并打开 Aquarium 1.1.2。
+2. 安装并打开 Aquarium 1.1.3。
 3. 在 App 界面使用上方和下方编码器控制音色与功能。
 
 ## 配套关系
 
 - 音频包：`org.resona.creative.aquarium.voice`，版本 1.0.1
-- App：`org.resona.creative.aquarium`，版本 1.1.2
+- App：`org.resona.creative.aquarium`，版本 1.1.3
 
 完整界面及双编码器的旋转、短按、长按说明见 Aquarium 的社区项目页面。
 

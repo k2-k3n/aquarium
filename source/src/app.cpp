@@ -42,7 +42,7 @@ struct State {
     kit::Saver saver;
     Saved s;
     uint32_t ms, seed, pick_at, sonar_at;
-    float depth, current, scatter, drift, bob, stray;
+    float depth, current, scatter, drift, bob, stray, light_phase;
     float sonar_strength;
     uint8_t pending_bubbles;
     uint32_t next_bubble;
@@ -163,6 +163,32 @@ void react_to_input(State *st, uint8_t prev, uint32_t dt)
     }
 }
 
+void draw_water(kit::Canvas &c, const State *st)
+{
+    for (int y = 0; y < c.H; ++y)
+        memcpy(c.px + y * c.stride, kAquariumSea + y * c.W, c.W * sizeof(uint16_t));
+
+    // Animate the light in the open water, behind the submarine and HUD.
+    constexpr int left = 128, height = 100;
+    for (int y = 0; y < height; ++y) {
+        const float shimmer = resona_sinf(st->light_phase - y * 0.09f);
+        const float light = (1.0f - (float)y / height)
+            * (0.10f - 0.45f * st->depth + (0.14f + 0.10f * st->current) * shimmer);
+        const int slope = (int)(light * 65536.0f / (c.W - left));
+        uint16_t *row = c.px + y * c.stride;
+        int gain = 65536;
+        for (int x = left; x < c.W; ++x) {
+            gain += slope;
+            const uint16_t color = row[x];
+            const int r = ((color >> 11) * gain + 32768) >> 16;
+            const int g = (((color >> 5) & 63) * gain + 32768) >> 16;
+            const int b = ((color & 31) * gain + 32768) >> 16;
+            row[x] = (uint16_t)((kit::clampi(r, 0, 31) << 11)
+                | (kit::clampi(g, 0, 63) << 5) | kit::clampi(b, 0, 31));
+        }
+    }
+}
+
 void draw(State *st)
 {
     kit::Canvas c;
@@ -172,8 +198,7 @@ void draw(State *st)
     const uint16_t amber = kit::rgb(255, 199, 94);
     const int sx = sub_x(st), sy = sub_y(st);
 
-    for (int y = 0; y < c.H; ++y)
-        memcpy(c.px + y * c.stride, kAquariumSea + y * c.W, c.W * sizeof(uint16_t));
+    draw_water(c, st);
 
     for (int k = 0; k < kSpecks; ++k) {
         const uint32_t h = (uint32_t)k * 2654435761u;
@@ -251,6 +276,8 @@ void animate(State *st, uint32_t ms)
     st->depth += ((float)depth_now(st) * 0.01f - st->depth) * glide;
     st->current += ((float)current_now(st) * 0.01f - st->current) * glide;
     const float cur = st->current;
+    st->light_phase += dt * (0.6f + 2.1f * cur);
+    if (st->light_phase >= 6.28318531f) st->light_phase -= 6.28318531f;
     st->scatter *= resona_expf(-dt * 1.5f);
     st->bob += dt * 6.28318531f * water::current_hz(st->depth, cur);
     if (st->bob >= 62.831853f) st->bob -= 62.831853f;

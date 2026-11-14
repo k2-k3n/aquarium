@@ -5,11 +5,11 @@
     "file": "App.rpk",
     "id": "org.resona.creative.aquarium",
     "name": "Aquarium",
-    "version": "1.1.2",
+    "version": "1.1.3",
     "kind": 1,
-    "bytes": 166660,
-    "sha256": "7acf81277aecdbd6543e4da39ea357c5bdd73d1446da437c2503fd307ca1a1a4",
-    "crc32": 427810968
+    "bytes": 167988,
+    "sha256": "e3d872d3dae1026f03b04095c1bb54e1b27b6e42571717d6a03363d09d0363db",
+    "crc32": 531655332
   },
   "audio_packs": [
     {

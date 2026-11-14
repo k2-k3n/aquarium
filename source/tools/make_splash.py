@@ -48,7 +48,7 @@ def frame(sub_x, sub_y, ring, step, title=False):
                 color = SUB[y * SUB_W + x]
                 if color:
                     r, g, b = color >> 11, (color >> 5) & 63, color & 31
-                    color = max(1, (r & 28) << 11 | (g & 56) << 5 | (b & 28))
+                    color = max(1, (r & 28) << 11 | (g & 48) << 5 | (b & 28))
                     start = (y + sub_y) * W + x + sub_x
                     width = min(step, SUB_W - x)
                     result[start:start + width] = [color] * width
@@ -85,7 +85,7 @@ def write_png_animation(path, frames):
 frames = [
     (140, [INK] * (W * H)),
     (170, frame(None, 0, 20, 1)),
-    (170, frame(46, 21, 36, 3)),
+    (170, frame(46, 21, 36, 4)),
     (600, frame(85, 39, 48, 1, True)),
 ]
 payload = bytearray()
